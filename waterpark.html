@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FunWaterpark</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="stylewaterpark.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="container nav-box">
+        <a href="#" class="logo"><i class="fa-solid fa-water-ladder"></i> Fun<span>Waterpark</span></a>
+        <nav class="nav-links" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#katalog">Katalog</a>
+            <a href="#top-rated">Top Rated</a>
+            <a href="#kontak">Kontak</a>
+        </nav>
+        <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
+    </div>
+</header>
+
+<!-- HERO SECTION -->
+<section id="home" class="hero">
+    <div class="container hero-content">
+        <span class="badge">🌈 Katalog Wahana Air Full Color</span>
+        <h1>Jelajahi Waterpark Ceria Indonesia!</h1>
+        <p>Temukan destinasi wisata air impian dengan berbagai wahana seru untuk keluarga.</p>
+
+        <!-- FILTER & SEARCH -->
+        <div class="filter-card">
+            <select id="locFilter">
+                <option value="all">Semua Lokasi</option>
+                <option value="Bali">Bali</option>
+                <option value="Jakarta">Jakarta</option>
+                <option value="Bogor">Bogor</option>
+                <option value="Bandung">Bandung</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Cari nama waterpark...">
+            <button id="btnReset" class="btn btn-pink"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+    </div>
+</section>
+
+<!-- KATALOG MAIN SECTION -->
+<section id="katalog" class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Katalog Destinasi Air</h2>
+            <p>Klik kartu untuk melihat detail tiket, lokasi Google Maps, dan galeri foto.</p>
+        </div>
+
+        <!-- CARD GRID -->
+        <div class="grid-cards" id="waterparkGrid"></div>
+
+        <div id="noResults" class="no-data hidden">
+            <i class="fa-solid fa-face-frown"></i>
+            <p>Destinasi tidak ditemukan.</p>
+        </div>
+    </div>
+</section>
+
+<!-- TOP RATED SECTION -->
+<section id="top-rated" class="section bg-rainbow">
+    <div class="container">
+        <div class="section-title">
+            <h2>Top Rated Waterpark ⭐</h2>
+            <p>Wahana air pilihan pengunjung dengan rating tertinggi!</p>
+        </div>
+
+        <div class="grid-top" id="topRatedGrid"></div>
+    </div>
+</section>
+
+<!-- KONTAK SECTION -->
+<section id="kontak" class="section">
+    <div class="container">
+        <div class="contact-box">
+            <div class="contact-info">
+                <h2>Hubungi Kami</h2>
+                <p>Informasi lebih lanjut tentang reservasi tiket rombongan & promosi.</p>
+                <p><i class="fa-solid fa-envelope"></i> info@funwaterpark.id</p>
+                <p><i class="fa-solid fa-phone"></i> +62 812 3456 7890</p>
+            </div>
+            <form id="contactForm" class="contact-form">
+                <input type="text" placeholder="Nama Lengkap" required>
+                <input type="email" placeholder="Alamat Email" required>
+                <textarea rows="4" placeholder="Tuliskan pesan..." required></textarea>
+                <button type="submit" class="btn btn-orange">Kirim Pesan</button>
+                <div id="formSuccess" class="alert-success hidden">Pesan berhasil terkirim!</div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container footer-box">
+        <p>&copy; 2026 FunWaterpark Portfolio. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- MODAL POPUP -->
+<div class="modal" id="detailModal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+    const waterparks = [
+        {
+            id: 1,
+            name: "Waterbom Bali Spectacular",
+            location: "Bali",
+            rating: 4.9,
+            reviews: 3420,
+            isTop: true,
+            mainImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtgb6-hCyPx4-f7skgoRWx-RtsXTFC8hvpi5i-RNPOBw&s=10",
+            gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxh97tm3L0-QvGVzBDPVZyqjM4bKGNLWPg8c9KVAiovw&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSFHuVKODqsJDzZ2EkiOz0oTnOURAE5KJjsBDQ0VcOrg&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRugpc7kKSfbW1o2p-SylwE2LewcTfnWU4u01vc3-yyHQ&s=10"],
+            mapsUrl: "https://maps.google.com/?q=Waterbom+Bali",
+            address: "Jl. Kartika Plaza, Kuta, Bali",
+            priceWeekday: "Rp 295.000",
+            priceWeekend: "Rp 350.000",
+            promo: "Diskon 25% Rombongan!",
+            description: "Taman rekreasi air tropis internasional dengan seluncuran spektakuler dan pemandangan hijau.",
+            facilities: ["Climax Slide", "Lazy River", "Gazebo VIP", "Food Court"]
+        },
+        {
+            id: 2,
+            name: "Atlantis Water Adventure",
+            location: "Jakarta",
+            rating: 4.7,
+            reviews: 2150,
+            isTop: true,
+            mainImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5om2vIYB2jeMttKcwzJamCtzYZsGqjKxRC7NifNJ3FA&s=10",
+            gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzWbjE_4XRKdLFFPg7mpAkKfusqWGPRIv7662ilxEZzQ&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhrW9hrUWhLxCGfBvw4_SGd58cbgiKLWr70MTTNW8CrQ&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK2F6A079KmhXdxocelHehv2VLYkqMF7GnlISKzDhMEw&s=10"],
+            mapsUrl: "https://maps.google.com/?q=Atlantis+Ancol",
+            address: "Kawasan Ancol, Jakarta Utara",
+            priceWeekday: "Rp 110.000",
+            priceWeekend: "Rp 150.000",
+            promo: "Buy 1 Get 1 Pelajar",
+            description: "Petualangan air bertema peradaban kuno Atlantis lengkap dengan kolam ombak raksasa.",
+            facilities: ["Kolam Ombak", "Crazy Slide", "Resto", "Sewa Ban"]
+        },
+        {
+            id: 3,
+            name: "The Jungle Waterpark",
+            location: "Bogor",
+            rating: 4.6,
+            reviews: 1890,
+            isTop: false,
+            mainImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBBWHsXu8TF9yIMb66QV_69CvqQBghwlduIzXHa-sEsA&s=10",
+            gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRUEHBLnMTNb-sMHkoi7v0PLV5iga2f5Cp0NFtTTVE8Q&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6dr3OQKs3yN5z10GQaJ3Zm5_a7sAr7W4thqdMjhYtFQ&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt7DVpQppiSMX7Wxr0naCqGqSLlRENO7OcBgJ0RvjoZw&s=10"],
+            mapsUrl: "https://maps.google.com/?q=The+Jungle+Bogor",
+            address: "Bogor Nirwana Residence, Bogor",
+            priceWeekday: "Rp 85.000",
+            priceWeekend: "Rp 110.000",
+            promo: "Gratis Masuk Ultah!",
+            description: "Destinasi wisata air sejuk bernuansa alam di kaki Gunung Salak Bogor.",
+            facilities: ["Kinetik Pool", "Giant Aquarium", "Tower Slide", "Live Music"]
+        },
+        {
+            id: 4,
+            name: "Karang Setra Waterland",
+            location: "Bandung",
+            rating: 4.5,
+            reviews: 1420,
+            isTop: false,
+            mainImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxiwdcyMj5dy-O4C426mHc7ND6mxg55P7iumlisNKrDw&s=10",
+            gallery: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSVPQID14HFFqyRer7lTXCOJ9uN6CjzWsajPWTODu2ag&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYYsk-rnBWvhJb22cjGRcGnak2acgGLnxidudVwEWyxw&s=10", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi8Lndg0A8hXr5DF8jTHX06ARv_8qlAXCpZQ4rpQOLsA&s=10"],
+            mapsUrl: "https://maps.google.com/?q=Karang+Setra+Bandung",
+            address: "Jl. Sirnagalih No.15, Bandung",
+            priceWeekday: "Rp 70.000",
+            priceWeekend: "Rp 90.000",
+            promo: "Diskon 20% Rombongan Sekolah",
+            description: "Taman rekreasi air legendaris Bandung dengan seluncuran pelangi dan kolam olympic.",
+            facilities: ["Pelangi Slide", "Space Ball", "Saung", "Kantin"]
+        }
+        
+    ];
+
+    // Elemen DOM
+    const grid = document.getElementById('waterparkGrid');
+    const topGrid = document.getElementById('topRatedGrid');
+    const locFilter = document.getElementById('locFilter');
+    const searchInput = document.getElementById('searchInput');
+    const btnReset = document.getElementById('btnReset');
+    const noResults = document.getElementById('noResults');
+    const modal = document.getElementById('detailModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalBody = document.getElementById('modalBody');
+
+    // Helper Bintang Rating
+    function getStars(rating) {
+        const count = Math.floor(rating);
+        return '⭐'.repeat(count);
+    }
+
+    // Render Katalog Utama
+    function renderCards(data) {
+        grid.innerHTML = '';
+        if (data.length === 0) {
+            noResults.classList.remove('hidden');
+            return;
+        }
+        noResults.classList.add('hidden');
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = () => showModal(item.id);
+            card.innerHTML = `
+                <div class="card-img">
+                    <img src="${item.mainImage}" alt="${item.name}">
+                    <span class="tag-loc">${item.location}</span>
+                    ${item.isTop ? '<span class="tag-top">Top Rated</span>' : ''}
+                </div>
+                <div class="card-body">
+                    <small>${getStars(item.rating)} ${item.rating} (${item.reviews})</small>
+                    <h3>${item.name}</h3>
+                    <p class="address"><i class="fa-solid fa-location-dot"></i> ${item.address}</p>
+                    <div class="card-foot">
+                        <span class="price">${item.priceWeekday}</span>
+                        <button class="btn-circle"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // Render Top Rated
+    function renderTopRated() {
+        topGrid.innerHTML = '';
+        waterparks.filter(x => x.isTop).forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card-top';
+            card.onclick = () => showModal(item.id);
+            card.innerHTML = `
+                <span class="rank-badge">#${index + 1}</span>
+                <img src="${item.mainImage}" alt="${item.name}">
+                <div>
+                    <h4>${item.name}</h4>
+                    <small>${item.location} • ⭐ ${item.rating}</small>
+                </div>
+            `;
+            topGrid.appendChild(card);
+        });
+    }
+
+    // Filter Function
+    function filterData() {
+        const loc = locFilter.value.toLowerCase();
+        const search = searchInput.value.toLowerCase();
+
+        const result = waterparks.filter(item => {
+            const matchLoc = loc === 'all' || item.location.toLowerCase() === loc;
+            const matchSearch = item.name.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
+            return matchLoc && matchSearch;
+        });
+        renderCards(result);
+    }
+
+    // Modal Popup
+    function showModal(id) {
+        const data = waterparks.find(x => x.id === id);
+        if (!data) return;
+
+        modalBody.innerHTML = `
+            <div class="modal-grid">
+                <div>
+                    <img id="mainImg" src="${data.gallery[0]}" class="modal-img">
+                    <div class="thumb-list">
+                        ${data.gallery.map((img, i) => `
+                            <img src="${img}" class="thumb ${i===0?'active':''}" onclick="document.getElementById('mainImg').src='${img}'">
+                        `).join('')}
+                    </div>
+                </div>
+                <div>
+                    <span class="tag-loc">${data.location}</span>
+                    <h2>${data.name}</h2>
+                    <p class="address"><i class="fa-solid fa-location-dot"></i> ${data.address}</p>
+                    
+                    <div class="box-promo">🎁 <strong>Promo:</strong> ${data.promo}</div>
+                    <div class="box-price">
+                        <p>Weekday: <strong>${data.priceWeekday}</strong></p>
+                        <p>Weekend: <strong>${data.priceWeekend}</strong></p>
+                    </div>
+                    <p>${data.description}</p>
+                    <div class="fac-box">
+                        ${data.facilities.map(f => `<span class="fac-chip">✓ ${f}</span>`).join('')}
+                    </div>
+                    <a href="${data.mapsUrl}" target="_blank" class="btn btn-cyan w-full mt-10">
+                        <i class="fa-solid fa-map"></i> Buka Google Maps
+                    </a>
+                </div>
+            </div>
+        `;
+        modal.classList.add('show');
+    }
+
+    // Events
+    closeModal.onclick = () => modal.classList.remove('show');
+    modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('show'); };
+    locFilter.onchange = filterData;
+    searchInput.oninput = filterData;
+    btnReset.onclick = () => { locFilter.value = 'all'; searchInput.value = ''; renderCards(waterparks); };
+    document.getElementById('menuToggle').onclick = () => document.getElementById('navLinks').classList.toggle('active');
+
+    document.getElementById('contactForm').onsubmit = (e) => {
+        e.preventDefault();
+        document.getElementById('formSuccess').classList.remove('hidden');
+        e.target.reset();
+    };
+
+    // Init App
+    renderCards(waterparks);
+    renderTopRated();
+</script>
+
+</body>
+</html>
